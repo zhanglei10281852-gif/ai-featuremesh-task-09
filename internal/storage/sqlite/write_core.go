@@ -167,7 +167,7 @@ func (q *queries) InsertApprovalTask(ctx context.Context, approval_task domain.A
 	if err := approval_task.Validate(); err != nil {
 		return err
 	}
-	_, err := q.q.ExecContext(ctx, `INSERT OR REPLACE INTO approval_tasks(id, run_id, requester_id, reviewer_id,
+	_, err := q.q.ExecContext(ctx, `INSERT INTO approval_tasks(id, run_id, requester_id, reviewer_id,
         review_queue, status, expires_at, resolved_at, resolution_note, version, created_at, updated_at)
         VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, approval_task.ID, approval_task.InferenceRunID, approval_task.RequesterID,
 		approval_task.ReviewerID, approval_task.ReviewQueue, approval_task.Status, formatTime(approval_task.ExpiresAt), nullableTime(approval_task.ResolvedAt),

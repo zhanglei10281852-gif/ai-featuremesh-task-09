@@ -39,9 +39,8 @@ func (s *ApprovalService) CreateApprovalTask(ctx context.Context, input CreateAp
 		if run.State != domain.InferenceRunRunning && run.State != domain.InferenceRunCompleted {
 			return domain.ConflictError{Resource: "run", Reason: "approval_task requires an active run"}
 		}
-		if existing, err := tx.GetPendingApprovalTask(ctx, run.ID); err == nil {
-			input.RequesterID = existing.RequesterID
-			input.ReviewQueue = strings.TrimSpace(input.ReviewQueue)
+		if _, err := tx.GetPendingApprovalTask(ctx, run.ID); err == nil {
+			return domain.ConflictError{Resource: "approval_task", Reason: "run already has a pending approval_task"}
 		} else if !isNotFound(err) {
 			return err
 		}
